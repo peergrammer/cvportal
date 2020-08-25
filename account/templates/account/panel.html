@@ -1,5 +1,5 @@
 {% extends "base.html" %}
 {% block title %} Dashboard Panel {% endblock %} 
 {% block content %}  
-<p>Welcome to CV Portal.</p>
+<p>Welcome to CV Portal. You can <a href="{% url 'edit' %}">edit your profile</a> or <a href="{% url 'password_change' %}">change your password</a>.</p></p>
 {% endblock %}

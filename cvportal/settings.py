@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -80,7 +81,7 @@ DATABASES = {
         'NAME': 'cvportal',
         'USER': 'djangouser',
         'PASSWORD': 'djangouser',
-        'HOST': '172.25.66.89',
+        'HOST': '172.30.99.111',
         'PORT': 3306,
     }
 }
@@ -129,3 +130,6 @@ LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
