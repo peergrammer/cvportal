@@ -11,10 +11,10 @@ class UserRegistrationForm(forms.ModelForm):
         fields = ('username', 'first_name', 'last_name', 'email')
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control',
-            'aria-describedby': 'passwordHelpInline'}),
-            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'aria-describedby': 'passwordHelpInline', 'placeholder': 'Must be unique'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control','placeholder': 'First name'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Provide a valid email'}),
         }
     
     def clean_password2(self):

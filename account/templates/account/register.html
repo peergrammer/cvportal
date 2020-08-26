@@ -4,7 +4,11 @@
 <h1>Create an account</h1>  
 <p>Please, sign up using the following form:</p>
 {{ user_form.non_field_errors }}
-{{ user_form.errors }}
+{% if user_form.errors %}
+        <small>
+            {{ user_form.username.errors }}
+        </small>
+{% endif %}
 <div class="bd-example"> 
 <form method="post">
     {% csrf_token %} 

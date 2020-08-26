@@ -29,9 +29,9 @@ def register(request):
             sent = True
             return render(request, 'account/register_done.html', {'new_user': new_user})
         else:
-            logger.debug("DEBUG something error in POST")
-            logger.error("something error in POST")
+            logger.error("Error in POST")
     else:
+        logger.debug("a new signup page")
         user_form = UserRegistrationForm()
     return render(request, 'account/register.html', {'user_form': user_form})
 
