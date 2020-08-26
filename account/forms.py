@@ -10,8 +10,7 @@ class UserRegistrationForm(forms.ModelForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
         widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control',
-            'aria-describedby': 'passwordHelpInline', 'placeholder': 'Must be unique'}),
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Must be unique'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control','placeholder': 'First name'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Provide a valid email'}),
@@ -32,7 +31,18 @@ class UserEditForm(forms.ModelForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('marital_status', 'dependents', 'years_experience', 'date_of_birth', 'nationality')
+        fields = ('marital_status', 'dependents', 'years_experience', 'date_of_birth', 'nationality',
+                    'residence_country', 'residence_city', 'mobile_number')
+        widgets = {
+            'marital_status': forms.Select(attrs={'class': 'form-control'}),
+            'dependents':  forms.NumberInput(attrs={'class': 'form-control'}),
+            'years_experience': forms.NumberInput(attrs={'class': 'form-control'}),
+            'date_of_birth': forms.DateInput(attrs={'class': 'form-control'}),
+            'nationality': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your citizenship'}),
+            'residence_country': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Current country you are in'}),
+            'residence_city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Current city you are in'}),
+            'mobile_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'E.164 Format (ex. +639991234567'}),
+        }
 
 class EducationEditForm(forms.ModelForm):
     class Meta:
