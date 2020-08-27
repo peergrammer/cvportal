@@ -6,4 +6,5 @@ urlpatterns = [
     path('', include('django.contrib.auth.urls')),  # use the Django Authentication Views
     path('register/', views.register, name='register'),
     path('edit/', views.edit, name='edit'),
+    path('panel/', views.panel, name='panel'),
 ]

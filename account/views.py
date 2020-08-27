@@ -21,9 +21,9 @@ def register(request):
             new_user = user_form.save(commit=False) #dont commit yet
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
-            # Create the profile associated with this registration
+            # Create the profile,and education associated with this registration
             Profile.objects.create(user=new_user)
-            #Education.objects.create(user=new_user)
+            Education.objects.create(user=new_user)
             # Send an email to the user
             send_email_to_new_user(user_form.cleaned_data)
             sent = True
@@ -41,19 +41,30 @@ def edit(request):
         user_form = UserEditForm(instance=request.user, data=request.POST)
         profile_form = ProfileEditForm(instance=request.user.profile,
                                         data=request.POST)
-        education_form = EducationEditForm(instance=request.user.profile,
+        education_form = EducationEditForm(instance=request.user.profile, 
                                         data=request.POST)
-
-        if user_form.is_valid() and profile_form.is_valid():
+        if user_form.is_valid() and profile_form.is_valid() and education_form.is_valid():
             user_form.save()
             profile_form.save()
             education_form.save()
+            logger.info("forms are saved.")
+        else:
+            logger.error("Edit profile ERROR in post!")
+        return render(request, 'account/panel.html', 
+                        {   'user_form': user_form, 
+                            'profile_form': profile_form,
+                            'education_form': education_form    
+                        })
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
         education_form = EducationEditForm(instance=request.user.profile)
-    return render(request, 'account/edit.html', {'user_form': user_form, 'profile_form': profile_form})
 
+    return render(request, 'account/edit.html', 
+                    {   'user_form': user_form, 
+                        'profile_form': profile_form,
+                        'education_form': education_form
+                    })
 
 def send_email_to_new_user(cleaned_data):
     subject = f"Welcome {cleaned_data['first_name']} {cleaned_data['last_name']}to CV Portal"

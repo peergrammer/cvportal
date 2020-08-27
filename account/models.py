@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 
+
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)
@@ -17,20 +18,34 @@ class Profile(models.Model):
         return self.user.username
 
 class Education(models.Model):
-    user = models.ForeignKey(Profile,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)
     degree_title = models.CharField(max_length=150)
     university = models.CharField(max_length=150)
-    gpa = models.DecimalField(max_digits=3, decimal_places=2)
+    gpa = models.DecimalField(max_digits=3, decimal_places=2, null=True)
     def __str__(self):
         return self.degree_title
 
 class Attachment(models.Model):
-    user = models.ForeignKey(Profile,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)
     attachment_name = models.CharField(max_length=150)
     attachment_file = models.FileField(upload_to='users/%y/%m/%d/')
     def __str__(self):
         return self.attachment_name
 
+# enable this when it is required that the countries are required
+# currently javascript in checking the relationship of countries and cities
 
+class Country(models.Model):
+    name = models.CharField(max_length=75)
+    phone_prefix = models.CharField(max_length=4) 
+    def __str__(self):
+        return self.name
+
+class City(models.Model):
+    country = models.ForeignKey(Country,
+                                on_delete=models.CASCADE)
+    name = models.CharField(max_length=150)
+    def __str__(self):
+        return self.name

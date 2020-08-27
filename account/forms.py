@@ -39,9 +39,8 @@ class ProfileEditForm(forms.ModelForm):
             'years_experience': forms.NumberInput(attrs={'class': 'form-control'}),
             'date_of_birth': forms.DateInput(attrs={'class': 'form-control'}),
             'nationality': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your citizenship'}),
-            'residence_country': forms.Select(attrs={'class': 'form-control crs-country', 'placeholder': 'Current country you are in',
-                                                        'data-region-id':"id_residence_city"}),
-            'residence_city': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Current city you are in'}),
+            'residence_country': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Current country you are in'}),
+            'residence_city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Current city you are in'}),
             'mobile_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'E.164 Format (ex. +639991234567'}),
         }
 
@@ -49,3 +48,8 @@ class EducationEditForm(forms.ModelForm):
     class Meta:
         model = Education
         fields = ('degree_title', 'university', 'gpa')
+        widgets = {
+            'degree_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Bachelor\'s Degree' }),
+            'university':  forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'College or University'}),
+            'gpa': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
