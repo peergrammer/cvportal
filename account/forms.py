@@ -36,7 +36,7 @@ class ProfileEditForm(forms.ModelForm):
         widgets = {
             'marital_status': forms.Select(attrs={'class': 'form-control'}),
             'dependents':  forms.NumberInput(attrs={'class': 'form-control'}),
-            'years_experience': forms.NumberInput(attrs={'class': 'form-control'}),
+            'years_experience': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.25'}),
             'date_of_birth': forms.DateInput(attrs={'class': 'form-control'}),
             'nationality': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your citizenship'}),
             'residence_country': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Current country you are in'}),
@@ -51,5 +51,5 @@ class EducationEditForm(forms.ModelForm):
         widgets = {
             'degree_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Bachelor\'s Degree' }),
             'university':  forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'College or University'}),
-            'gpa': forms.NumberInput(attrs={'class': 'form-control'}),
+            'gpa': forms.NumberInput(attrs={'class': 'form-control','step': '0.01'}),
         }

@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login
 from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm, EducationEditForm
@@ -11,7 +11,15 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def panel(request):
-    return render(request, 'account/panel.html', {'section': 'panel'})
+    user_education = Education.education_entries.all().filter(user=request.user)
+    user_profile= get_object_or_404(Profile, user=request.user)
+    return render(request, 'account/panel.html', {  'section': 'panel', 
+                                                    'user_profile': user_profile, 
+                                                    'user_education': user_education})
+
+def profile_detail(request):
+    user_profile_detail = get_object_or_404(Profile, user=request.user)
+    return render(request, 'account/panel.html', {'section': 'panel', 'user_profile_detail': user_profile_detail})
 
 def register(request):
     if request.method == 'POST':
@@ -39,9 +47,13 @@ def register(request):
 def edit(request):
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user, data=request.POST)
+        logger.info(request.POST)
         profile_form = ProfileEditForm(instance=request.user.profile,
                                         data=request.POST)
-        education_form = EducationEditForm(instance=request.user.profile, 
+        logger.info("-s profile request post")
+        logger.info(request.POST)
+        logger.info("-e profile request post")
+        education_form = EducationEditForm(instance=request.user,
                                         data=request.POST)
         if user_form.is_valid() and profile_form.is_valid() and education_form.is_valid():
             user_form.save()
@@ -58,7 +70,7 @@ def edit(request):
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
-        education_form = EducationEditForm(instance=request.user.profile)
+        education_form = EducationEditForm(instance=request.user)
 
     return render(request, 'account/edit.html', 
                     {   'user_form': user_form, 
