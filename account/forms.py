@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile, Education
+from .models import Profile, Education, Attachment
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -52,4 +52,13 @@ class EducationEditForm(forms.ModelForm):
             'degree_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Bachelor\'s Degree' }),
             'university':  forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'College or University'}),
             'gpa': forms.NumberInput(attrs={'class': 'form-control','step': '0.01'}),
+        }
+
+class AttachmentEditForm(forms.ModelForm):
+    class Meta:
+        model = Attachment
+        fields = ('attachment_name', 'attachment_file')
+        widgets = {
+            'attachment_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Display name' }),
+            'attachment_file': forms.FileInput(attrs={'class': 'form-control-file' }),
         }

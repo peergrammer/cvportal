@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'cvportal',
         'USER': 'djangouser',
         'PASSWORD': 'djangouser',
-        'HOST': '172.30.106.219',
+        'HOST': '172.30.108.190',
         'PORT': 3306,
     }
 }
@@ -129,13 +129,13 @@ LOGIN_REDIRECT_URL = 'panel'
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'testeremail.cvportal@gmail.com'
-EMAIL_HOST_PASSWORD = 'tE$terEm@il456'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_HOST_USER = 'testeremail.cvportal@gmail.com'
+#EMAIL_HOST_PASSWORD = 'tE$terEm@il456'
+#EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
