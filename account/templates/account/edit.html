@@ -13,8 +13,10 @@
 <form method="post" enctype="multipart/form-data">  
     {{ user_form.as_p }}    
     {{ profile_form.as_p }}
+    {% if not education_and_attach_flag %}
     {{ education_form.as_p }}
     {{ attachment_form.as_p }}
+    {% endif %}
     {% csrf_token %}    
     <p><input type="submit" value="Save changes"></p>  
 </form>
