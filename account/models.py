@@ -9,6 +9,10 @@ class EducationManager(models.Manager):
     def get_queryset(self):        
         return super(EducationManager, self).get_queryset()
 
+class AttachmentManager(models.Manager):    
+    def get_queryset(self):        
+        return super(AttachmentManager, self).get_queryset()
+
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)
@@ -46,11 +50,15 @@ class Attachment(models.Model):
                                 on_delete=models.CASCADE)
     attachment_name = models.CharField(max_length=150)
     attachment_file = models.FileField(upload_to='users/%y/%m/%d/')
+
+    objects = models.Manager() # The default manager.
+    attachment_entries = AttachmentManager() # Our custom manager.
+
     def __str__(self):
         return self.attachment_name
 
-# enable this when it is required that the countries are required
-# currently javascript in checking the relationship of countries and cities
+# enable below tables this when it is required that the countries/cities are strictly to be enforced by the database
+# currently this is done via javascript
 
 class Country(models.Model):
     name = models.CharField(max_length=75)

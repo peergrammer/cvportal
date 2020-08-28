@@ -4,18 +4,20 @@ from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login
 from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm, EducationEditForm
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Education
+from .models import Profile, Education, Attachment
 import logging
 
 logger = logging.getLogger(__name__)
 
 @login_required
 def panel(request):
+    user_profile = get_object_or_404(Profile, user=request.user)
     user_education = Education.education_entries.all().filter(user=request.user)
-    user_profile= get_object_or_404(Profile, user=request.user)
+    user_attachment = Attachment.attachment_entries.filter(user=request.user)
     return render(request, 'account/panel.html', {  'section': 'panel', 
                                                     'user_profile': user_profile, 
-                                                    'user_education': user_education})
+                                                    'user_education': user_education,
+                                                    'user_attachment': user_attachment})
 
 def profile_detail(request):
     user_profile_detail = get_object_or_404(Profile, user=request.user)
@@ -32,6 +34,7 @@ def register(request):
             # Create the profile,and education associated with this registration
             Profile.objects.create(user=new_user)
             Education.objects.create(user=new_user)
+            Attachment.objects.create(user=new_user)
             # Send an email to the user
             send_email_to_new_user(user_form.cleaned_data)
             sent = True
@@ -62,11 +65,7 @@ def edit(request):
             logger.info("forms are saved.")
         else:
             logger.error("Edit profile ERROR in post!")
-        return render(request, 'account/panel.html', 
-                        {   'user_form': user_form, 
-                            'profile_form': profile_form,
-                            'education_form': education_form    
-                        })
+        return panel(request)
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
@@ -79,7 +78,7 @@ def edit(request):
                     })
 
 def send_email_to_new_user(cleaned_data):
-    subject = f"Welcome {cleaned_data['first_name']} {cleaned_data['last_name']}to CV Portal"
+    subject = f"Welcome {cleaned_data['first_name']} {cleaned_data['last_name']} to CV Portal"
     message = f"You are now a registered user. Your username is {cleaned_data['username']}"
     send_mail(subject, message, 'admin@cvportal.com',[cleaned_data['email']])
     logger.info("email sent")
