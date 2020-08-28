@@ -2,7 +2,7 @@
 {% block title %} Dashboard Panel {% endblock %} 
 {% block content %}  
 <h1 class="display-4">Welcome to CV Portal </h1>
-</p>
+<p>
     You can <a href="{% url 'edit' %}">edit your profile</a> or <a href="{% url 'password_change' %}">change your password</a>.
 </p>
 <dl class="row">
@@ -29,14 +29,18 @@
     <dt class="col-sm-3 text-truncate">Mobile:</dt>
     <dd class="col-sm-9">{{ user_profile.mobile_number}}</dd>
     <dt class="col-sm-3 text-truncate">Degrees</dt>
-    <dd class="col-sm-9">{% for item in user_education %}
-                     <div> University of {{ item.university }}, Degree of {{ item.degree_title}}, GPA: ({{item.gpa}})</div>
-          {% endfor %}
+    <dd class="col-sm-9">
+      {% for item in user_education %}
+      <div> University of {{ item.university }}, Degree of {{ item.degree_title}}, GPA: ({{item.gpa}})</div>
+      {% endfor %}
+      <div> You can <a href="{% url 'education' %}">add more education</a></div>
     </dd>
     <dt class="col-sm-3 text-truncate">Attachments</dt>
-    <dd class="col-sm-9">{% for attachment_item in user_attachment %}
+    <dd class="col-sm-9">
+      {% for attachment_item in user_attachment %}
       <div> Attachment: {{ attachment_item.attachment_name }}, File:( {{ attachment_item.attachmet_file}} )</div>
-        {% endfor %}
+      {% endfor %}
+      <div> You can <a href="{% url 'attachment' %}">add more attachment</a> </div>
   </dd>
     {% endif %}
   </dl>

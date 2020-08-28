@@ -2,7 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login
-from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm, EducationEditForm
+from django.contrib import messages
+from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm, EducationEditForm, AttachmentEditForm
 from django.contrib.auth.decorators import login_required
 from .models import Profile, Education, Attachment
 import logging
@@ -24,6 +25,7 @@ def profile_detail(request):
     return render(request, 'account/panel.html', {'section': 'panel', 'user_profile_detail': user_profile_detail})
 
 def register(request):
+    sent = False
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         logger.info("@register POST -- after the user submmitted the create account")
@@ -31,10 +33,8 @@ def register(request):
             new_user = user_form.save(commit=False) #dont commit yet
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
-            # Create the profile,and education associated with this registration
+            # Create the profile associated with this registration
             Profile.objects.create(user=new_user)
-            Education.objects.create(user=new_user)
-            Attachment.objects.create(user=new_user)
             # Send an email to the user
             send_email_to_new_user(user_form.cleaned_data)
             sent = True
@@ -48,21 +48,36 @@ def register(request):
 
 @login_required
 def edit(request):
+    user_education = Education.education_entries.all().filter(user=request.user)
+    education_and_attach_flag = False
+    if user_education:
+        education_and_attach_flag = True
+    
+    logger.info(user_education)
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user, data=request.POST)
         logger.info(request.POST)
         profile_form = ProfileEditForm(instance=request.user.profile,
                                         data=request.POST)
-        logger.info("-s profile request post")
-        logger.info(request.POST)
-        logger.info("-e profile request post")
-        education_form = EducationEditForm(instance=request.user,
-                                        data=request.POST)
-        if user_form.is_valid() and profile_form.is_valid() and education_form.is_valid():
+        education_form = EducationEditForm(data=request.POST)
+        attachment_form = AttachmentEditForm(data=request.POST, files=request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            education_form.save()
-            logger.info("forms are saved.")
+
+            # TODO: should be able to update education and attachment
+            if not user_education:  #this means that this is the 1st entry
+                # for the education table
+                new_education = education_form.save(commit=False)
+                new_education.user = request.user
+                new_education.save()
+                # for the attachment table
+                new_attachment = attachment_form.save(commit=False)
+                new_attachment.user = request.user
+                new_attachment.save()
+                logger.info("forms are saved.")
+                # Send an email to the user
+            send_email_to_user_after_profile_update(user_form.cleaned_data)
         else:
             logger.error("Edit profile ERROR in post!")
         return panel(request)
@@ -70,15 +85,55 @@ def edit(request):
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
         education_form = EducationEditForm(instance=request.user)
+        attachment_form = AttachmentEditForm(instance=request.user)
 
     return render(request, 'account/edit.html', 
                     {   'user_form': user_form, 
                         'profile_form': profile_form,
-                        'education_form': education_form
+                        'education_form': education_form,
+                        'attachment_form': attachment_form,
+                        'education_and_attach_flag': education_and_attach_flag,
                     })
 
+@login_required
+def education_post(request):
+    if request.method == 'POST':
+        education_form = EducationEditForm(data=request.POST)
+        if education_form.is_valid():
+            # create the education record
+            new_education = education_form.save(commit=False)
+            new_education.user = request.user
+            new_education.save()
+        return panel(request)
+    else:
+        education_form = EducationEditForm()
+    
+    return render(request, 'account/education.html',{'education_form': education_form})
+
+@login_required
+def attachment_post(request):
+    if request.method == 'POST':
+        attachment_form = AttachmentEditForm(data=request.POST, files=request.FILES)
+        if attachment_form.is_valid():
+            # create the attachment record
+            new_attachment = attachment_form.save(commit=False)
+            new_attachment.user = request.user
+            new_attachment.save()
+        return panel(request)
+    else:
+        attachment_form = AttachmentEditForm()
+    
+    return render(request, 'account/attachment_upload.html',{'attachment_form': attachment_form})
+
+# TODO: This should be moved to another file or class, not part of the View
 def send_email_to_new_user(cleaned_data):
     subject = f"Welcome {cleaned_data['first_name']} {cleaned_data['last_name']} to CV Portal"
     message = f"You are now a registered user. Your username is {cleaned_data['username']}"
     send_mail(subject, message, 'admin@cvportal.com',[cleaned_data['email']])
-    logger.info("email sent")
+    logger.info("send_email_to_new_user - email sent")
+
+def send_email_to_user_after_profile_update(cleaned_data):
+    subject = f"Profile Update Notification {cleaned_data['first_name']} {cleaned_data['last_name']}"
+    message = f"Your profile has been updated. This is a generated message."
+    send_mail(subject, message, 'admin@cvportal.com',[cleaned_data['email']])
+    logger.info("send_email_to_user_after_profile_update - email sent")
