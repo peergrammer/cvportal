@@ -1,5 +1,43 @@
 {% extends "base.html" %}
 {% block title %} Dashboard Panel {% endblock %} 
 {% block content %}  
-<p>Welcome to CV Portal. You can <a href="{% url 'edit' %}">edit your profile</a> or <a href="{% url 'password_change' %}">change your password</a>.</p></p>
+<h1 class="display-4">Welcome to CV Portal </h1>
+</p>
+    You can <a href="{% url 'edit' %}">edit your profile</a> or <a href="{% url 'password_change' %}">change your password</a>.
+</p>
+<dl class="row">
+    <dt class="col-sm-3">Full Name: </dt>
+    <dd class="col-sm-9">{{ request.user.first_name }} {{ request.user.last_name }} </dd>
+    <dt class="col-sm-3">Email: </dt>
+    <dd class="col-sm-9">{{ request.user.email }} </dd>  
+    {% if user_profile.marital_status %}
+    <dt class="col-sm-3">Nationality: </dt>
+    <dd class="col-sm-9">{{ user_profile.nationality }}</dd>
+    <dt class="col-sm-3">Status and Dependents:</dt>
+    {% if user_profile.marital_status == "m" %}    
+    <dd class="col-sm-9">Married with {{ user_profile.dependents}} dependent(s) </dd>
+    {% endif %}
+    {% if user_profile.marital_status == "s" %}
+    <dd class="col-sm-9">Single</dd>
+    {% endif %}
+    <dt class="col-sm-3">Years of Experience:</dt>
+    <dd class="col-sm-9">{{ user_profile.years_experience}}</dd>
+    <dt class="col-sm-3 text-truncate">Date of birth: </dt>
+    <dd class="col-sm-9">{{ user_profile.date_of_birth }}</dd>
+    <dt class="col-sm-3 text-truncate">Current Country and City:</dt>
+    <dd class="col-sm-9">{{ user_profile.residence_country}} - {{ user_profile.residence_city}} </dd>
+    <dt class="col-sm-3 text-truncate">Mobile:</dt>
+    <dd class="col-sm-9">{{ user_profile.mobile_number}}</dd>
+    <dt class="col-sm-3 text-truncate">Degrees</dt>
+    <dd class="col-sm-9">{% for item in user_education %}
+                     <div> University of {{ item.university }}, Degree of {{ item.degree_title}}, GPA: ({{item.gpa}})</div>
+          {% endfor %}
+    </dd>
+    <dt class="col-sm-3 text-truncate">Attachments</dt>
+    <dd class="col-sm-9">{% for attachment_item in user_attachment %}
+      <div> Attachment: {{ attachment_item.attachment_name }}, File:( {{ attachment_item.attachmet_file}} )</div>
+        {% endfor %}
+  </dd>
+    {% endif %}
+  </dl>
 {% endblock %}

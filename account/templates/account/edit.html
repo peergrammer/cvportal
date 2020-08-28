@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %} Edit your account {% endblock %}
+{% block content %}  
+<h1>Edit your account</h1>  
+<p>You can edit your account using the following form:</p> 
+{{ user_form.non_field_errors }}
+{% if user_form.errors %}
+        <small>
+            {{ user_form.username.errors }}
+        </small>
+{% endif %} 
+ 
+<form method="post">  
+    {{ user_form.as_p }}    
+    {{ profile_form.as_p }}
+    {{ education_form.as_p }}
+    {% csrf_token %}    
+    <p><input type="submit" value="Save changes"></p>  
+</form>
+<link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+rel="stylesheet">
+<script crossorigin="anonymous" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.min.css" type="text/css" media="all" />
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/static/js/demo.js"></script>
+<script type="text/javascript" src="/static/js/country_auto.js"></script>
+<script type='text/javascript'>
+    $(function() {
+        // applying the styles to the User form
+        $("#id_first_name").addClass( "form-control");
+        $("#id_last_name").addClass( "form-control");
+        $("#id_email").addClass( "form-control");
+
+        // applying the styles for the calendar input
+        $("#id_date_of_birth").wrap("<div class='input-group date' id='id_date'></div>");
+        $("#id_date_of_birth").after("<div class='input-group-addon input-group-append'><div class='input-group-text'>"
+            + "<i class='glyphicon glyphicon-calendar fa fa-calendar'></i></div></div>");
+
+         // behavior definitions
+        function toggleDependentField() {
+            let marital_status = $( "select#id_marital_status" ).val();
+            if (marital_status == 'm') {
+                $( "#id_dependents" ).prop("readonly", false);
+            } else {
+                $( "#id_dependents" ).val(0); // set it to 0 and uneditable
+                $( "#id_dependents" ).prop("readonly", true);
+            }
+        }        
+
+        // behavior triggers
+        toggleDependentField();
+        $("#id_marital_status").change(toggleDependentField);        
+
+        //datepicker
+        $('#id_date').datetimepicker({
+            "allowInputToggle": true,
+            "showClose": true,
+            "showClear": true,
+            "showTodayButton": true,
+            "format": "YYYY-MM-DD",
+        });
+       
+        autocomplete(document.getElementById("id_nationality"), countries);
+        autocomplete(document.getElementById("id_residence_country"), countries);
+    });
+</script>
+{% endblock %}
